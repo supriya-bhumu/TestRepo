@@ -37,21 +37,21 @@ namespace TestRepo.Tests
             hp.GoToEmployeePage(driver);
         }
 
-        [Test]
+        [Test,Order(1)]
         public void CreateEmployeeTest()
         {
 
             emp.Create(driver);
         }
 
-        [Test]
+        [Test, Order(2)]
         public void EditEmployeeTest()
         {
 
             emp.Edit(driver);
         }
 
-        [Test]
+        [Test, Order(3)]
         public void DeleteEmployeeTest()
         {
 
