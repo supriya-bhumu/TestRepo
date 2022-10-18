@@ -49,19 +49,18 @@ namespace TestRepo.Pages
         public void edit(IWebDriver driver)
         {
 
-
             IWebElement goToLastPageButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
             goToLastPageButton.Click();
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
+            IWebElement editedCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]"));
 
-            // IWebElement findRecordCreated = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
             IWebElement editButton = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[5]/a[1]"));
             editButton.Click();
-
+            Thread.Sleep(500);
             IWebElement codeTextbox = driver.FindElement(By.Id("Code"));
             //Clear previou code before providing new code
             codeTextbox.Clear();
-            codeTextbox.SendKeys("TestRepo1");
+            codeTextbox.SendKeys("TestRepo2");
             // Enter description into the Description textbox
             IWebElement descriptionInput = driver.FindElement(By.Id("Description"));
             //Clear description text before entering new description text
@@ -81,15 +80,15 @@ namespace TestRepo.Pages
             Thread.Sleep(3000);
             IWebElement goToLastPageButton1 = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[4]/a[4]/span"));
             goToLastPageButton1.Click();
-            Thread.Sleep(2000);
-            IWebElement editedCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
-            Assert.That(editedCode.Text == "TestRepo1", "Time record hasn't been created.");
+            Thread.Sleep(5000);
+           // IWebElement editedCodenew = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]"));
+            IWebElement editedname = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
 
             IWebElement editedDescription = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[3]"));
             IWebElement editedPrice = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[4]"));
 
 
-            Assert.That(editedCode.Text == "TestRepo1", "Edited code and expected code do not match.");
+            Assert.That(editedname.Text == "TestRepo2", "Edited code and expected code do not match.");
             Assert.That(editedDescription.Text == "Testing1", "Edited description and expected description do not match.");
             Assert.That(editedPrice.Text == "$231.00", "Edited price and expected price do not match.");
 
@@ -115,7 +114,7 @@ namespace TestRepo.Pages
             Thread.Sleep(2000);
             IWebElement newLastRecord = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
             Assert.That(newLastRecord != lastRecord, "Time record hasn't been deleted.");
-
+         
 
         }
     }
