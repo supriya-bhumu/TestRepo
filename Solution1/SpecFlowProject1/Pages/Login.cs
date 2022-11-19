@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using MarsQAProfile.Drivers;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using SpecFlowProject1.Utilities;
@@ -11,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace SpecFlowProject1.Pages
 {
-    public  class Login
+    public  class Login:Driver
     {
         public static string Url = "http://localhost:5000";
         //Method to login into QA Mars Profile page
-        public  void login(IWebDriver driver)
+        public  void login()
         {
             
             driver.Navigate().GoToUrl(Url);
