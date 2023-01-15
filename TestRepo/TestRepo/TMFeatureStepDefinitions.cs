@@ -2,89 +2,83 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Diagnostics;
 using TechTalk.SpecFlow;
+using TestRepo.Pages;
 using TestRepo.Utilities;
 
 namespace TestRepo
 {
     [Binding]
-    public class TMFeatureStepDefinitions: CommonDriver
+    public class TMFeatureStepDefinitions : CommonDriver
     {
+        Homepage hp = new Homepage();
+        TM_Page page = new TM_Page();
+        
+
         [Given(@"I logged into turn up portal successfully")]
         public void GivenILoggedIntoTurnUpPortalSuccessfully()
         {
-            driver = new ChromeDriver();
-            // navigate to TurnUp portal
-            driver.Navigate().GoToUrl("http://horse.industryconnect.io/Account/Login?ReturnUrl=%2f");
-            driver.Manage().Window.Maximize();
-            Thread.Sleep(500);
-
-            // identify username textbox and enter valid username
-            IWebElement usernameInput = driver.FindElement(By.Id("UserName"));
-            usernameInput.SendKeys("hari");
-
-            // identify password textbox and enter valid password
-            IWebElement passwordInput = driver.FindElement(By.Id("Password"));
-            passwordInput.SendKeys("123123");
-
-            // identify login button and click on it
-            IWebElement loginButton = driver.FindElement(By.XPath("//*[@id='loginForm']/form/div[3]/input[1]"));
-            loginButton.Click();
-            Thread.Sleep(2000);
+            LoginPage();
         }
 
         [When(@"I navigate to Time and Material page")]
         public void WhenINavigateToTimeAndMaterialPage()
         {
 
-            IWebElement adminDropDown = driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a"));
-            adminDropDown.Click();
-
-            IWebElement TM = driver.FindElement(By.XPath("/ html / body / div[3] / div / div / ul/ li[5] / ul / li[3] / a"));
-
-            TM.Click();
-            Thread.Sleep(500);
+            hp.GoToTMPage(driver);
         }
 
         [When(@"I create a new time and material record")]
         public void WhenICreateANewTimeAndMaterialRecord()
         {
-            IWebElement createNewButton = driver.FindElement(By.XPath("/html/body/div[4]/p/a"));
-            createNewButton.Click();
-            IWebElement typeCodeDropdown = driver.FindElement(By.XPath("   /html/body/div[4]/form/div/div[1]/div/span[1]/span/span[2]/span"));
-            typeCodeDropdown.Click();
-            Thread.Sleep(500);
-            IWebElement timeOption = driver.FindElement(By.XPath("//*[@id=\"TypeCode_option_selected\"]"));
-            timeOption.Click();
-            IWebElement codeTextbox = driver.FindElement(By.Id("Code"));
-            codeTextbox.SendKeys("TestRepo");
-            // Enter description into the Description textbox
-            IWebElement descriptionInput = driver.FindElement(By.Id("Description"));
-            descriptionInput.SendKeys("Testing");
-            // Enter price into the Price per unit textbox
-            IWebElement inputTag = driver.FindElement(By.XPath("//*[@id=\"TimeMaterialEditForm\"]/div/div[4]/div/span[1]/span/input[1]"));
-            inputTag.Click();
-            IWebElement priceTextbox = driver.FindElement(By.Id("Price"));
-            priceTextbox.SendKeys("2310");
-            // Click on "Save" button
-            IWebElement saveButton = driver.FindElement(By.Id("SaveButton"));
-            saveButton.Click();
-            Thread.Sleep(2000);
-            IWebElement goToLastPageButton = driver.FindElement(By.XPath("/ html / body / div[4] / div / div / div[4] / a[4] / span"));
-            goToLastPageButton.Click();
-            Thread.Sleep(2000);
-            IWebElement newCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
-            Assert.That(newCode.Text == "TestRepo", "Time record hasn't been created.");
+            page.create(driver);
         }
-
+        
         [Then(@"The record should be created successfully")]
         public void ThenTheRecordShouldBeCreatedSuccessfully()
-        {
-            IWebElement goToLastPageButton = driver.FindElement(By.XPath("/ html / body / div[4] / div / div / div[4] / a[4] / span"));
-            goToLastPageButton.Click();
-            Thread.Sleep(2000);
-            IWebElement newCode = driver.FindElement(By.XPath("//*[@id=\"tmsGrid\"]/div[3]/table/tbody/tr[last()]/td[1]"));
-            Assert.That(newCode.Text == "TestRepo", "Time record hasn't been created.");
+        {   string newCode = page.GetCode(driver);
+            string newDescription = page.GetDescription(driver);
+            string newPrice = page.GetPrice(driver);
+            
+
+            Assert.That(newCode == "TestRepo", "Time record hasn't been created.");
+            Assert.That(newDescription == "Testing", "New description and expected description do not match.");
+            Assert.That(newPrice == "$2,310.00", "New price and expected price do not match.");
         }
+
+       
+
+        [Then(@"I delete an existing time and material record successfully")]
+        public void ThenIDeleteAnExistingTimeAndMaterialRecord()
+        {
+            page.goToLastpage(driver);
+            string lastRecord = page.getLastRecord(driver);
+            page.delete(driver);
+            Thread.Sleep(1000);
+            string newlastRecord = page.getLastRecord(driver);
+            Assert.That(lastRecord != newlastRecord);
+        }
+
+        [When(@"I update '([^']*)', '([^']*)' and '([^']*)' on an existing time and material record")]
+        public void WhenIUpdateAndOnAnExistingTimeAndMaterialRecord(string description, string code, string price)
+        {
+            page.edit(driver, description, code, price);
+        }
+
+
+
+        [Then(@"The record should have the updated '([^']*)', '([^']*)' and '([^']*)'")]
+        public void ThenTheRecordShouldHaveTheUpdatedAnd(string description, string code, string price)
+        {
+            string neweditedCode = page.GetCode(driver);
+            string neweditedDescription = page.GetDescription(driver);
+            string neweditedPrice = page.GetPrice(driver);
+
+            Assert.That(neweditedCode == code, "Time record hasn't been created.");
+            Assert.That(neweditedDescription == description, "New description and expected description do not match.");
+            Assert.That(neweditedPrice == price, "New price and expected price do not match.");
+        }
+
     }
 }

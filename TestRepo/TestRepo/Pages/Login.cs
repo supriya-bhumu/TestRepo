@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestRepo.Utilities;
+using NUnit.Framework;
 
 namespace TestRepo.Pages
 {
@@ -18,11 +20,16 @@ namespace TestRepo.Pages
             driver.Navigate().GoToUrl("http://horse.industryconnect.io/Account/Login?ReturnUrl=%2f");
             driver.Manage().Window.Maximize();
             Thread.Sleep(500);
-
-            // identify username textbox and enter valid username
-            IWebElement usernameInput = driver.FindElement(By.Id("UserName"));
-            usernameInput.SendKeys("hari");
-
+            try
+            {
+                // identify username textbox and enter valid username
+                IWebElement usernameInput = driver.FindElement(By.Id("UserName"));
+                usernameInput.SendKeys("hari");
+            }
+            catch(Exception e)
+            {
+                Assert.Fail("TurnUp portal home page did not launch.", e.Message);
+            }
             // identify password textbox and enter valid password
             IWebElement passwordInput = driver.FindElement(By.Id("Password"));
             passwordInput.SendKeys("123123");
@@ -30,7 +37,7 @@ namespace TestRepo.Pages
             // identify login button and click on it
             IWebElement loginButton = driver.FindElement(By.XPath("//*[@id='loginForm']/form/div[3]/input[1]"));
             loginButton.Click();
-            Thread.Sleep(2000);
+            Thread.Sleep(1000);
         }
     }
 }

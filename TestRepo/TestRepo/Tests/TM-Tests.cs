@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using System.Diagnostics;
 using TestRepo.Pages;
 using TestRepo.Utilities;
 using static System.Net.Mime.MediaTypeNames;
@@ -23,7 +24,7 @@ namespace TestRepo.Tests
         public void EditTMTest()
         {
             hp.GoToTMPage(driver);
-            page.edit(driver);
+          //  page.edit(driver,Description,Code,Price)
         }
         [Test, Order(3), Description("This test deletes TM record")]
         public void DeleteTMTest()

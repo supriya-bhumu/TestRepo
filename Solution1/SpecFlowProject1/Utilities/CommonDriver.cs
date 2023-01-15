@@ -13,9 +13,20 @@ namespace SpecFlowProject1.Utilities
 {
     public class CommonDriver
     {
+        public IWebDriver driver;
 
-        public IWebDriver driver= new ChromeDriver();
-       
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+
+             driver = new ChromeDriver();
+    }
+
+        [OneTimeTearDown]
+        public void CloseTestRun()
+        {
+            driver.Quit();
+        }
 
 
 
